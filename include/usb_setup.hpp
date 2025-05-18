@@ -3,7 +3,7 @@
 
 #include "defines.hpp"
 
-void usb_serial_setup() {
+inline void usb_setup() {
     #ifdef DEBUGGING_ENABLED
     Serial.begin(USB_SERIAL_SPEED);
     #endif

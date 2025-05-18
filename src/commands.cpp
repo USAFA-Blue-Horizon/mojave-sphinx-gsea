@@ -33,3 +33,18 @@ E_CMD parse_command(uint8_t* alleged_cmd) {
         return E_CMD::NONE;
     }
 }
+
+const char* e_cmd_to_string(E_CMD cmd) {
+    switch(cmd) {
+        case E_CMD::PING:           return "PING";
+        case E_CMD::DISARM:         return "DISARM";
+        case E_CMD::ARM:            return "ARM";
+        case E_CMD::LOAD:           return "LOAD";
+        case E_CMD::STOP_LOADING:   return "STOP_LOADING";
+        case E_CMD::FIRE:           return "FIRE";
+        case E_CMD::FLOW:           return "FLOW";
+        case E_CMD::CO2_PURGE:      return "CO2_PURGE";
+        case E_CMD::NONE:           return "NONE";
+        default:                    return "UNKNOWN_CMD";
+    }
+}

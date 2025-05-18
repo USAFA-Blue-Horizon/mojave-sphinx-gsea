@@ -7,6 +7,7 @@
 #include "radio.hpp"
 #include "commands.hpp"
 #include <string>
+#include <sstream>
 
 class System {
     public:
@@ -21,6 +22,8 @@ class System {
 
         static const char* e_state_to_string(E_State);
 
+        void execute_cmd(E_CMD cmd);
+
         System(const System&) = delete;
         System(System&&) = delete;
         System& operator= (const System&) = delete;
@@ -34,6 +37,8 @@ class System {
         E_State GetState() {
             return m_state;
         }
+
+        void TransmitTelemetry();
 
         Radio* GetRadio() {
             return &m_radio;

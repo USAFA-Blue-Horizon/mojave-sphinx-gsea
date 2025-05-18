@@ -2,12 +2,15 @@
 #include <Servo.h>
 #include "defines.hpp"
 #include "system.hpp"
-#include "usb_serial.hpp"
+#include "usb_setup.hpp"
 #include "commands.hpp"
 #include "watchdogg.hpp"
 
+uint32_t tlm_timer;
+
 void setup() {
-  usb_serial_setup();
+  usb_setup();
+  tlm_timer = millis();
   USB_DEBUG_PRINTLN("Setup complete");
 }
 
@@ -28,4 +31,10 @@ void loop() {
   }
 
   System::GetInstance().RunStateManager(parsed_cmd);
+
+  uint32_t now = millis();
+  if (now - tlm_timer > TLM_TIMER_WAIT) {
+    System::GetInstance().TransmitTelemetry();
+    tlm_timer = now;
+  }
 }

@@ -12,6 +12,57 @@ const char* System::e_state_to_string(E_State state) {
     }
 }
 
+void System::execute_cmd(E_CMD cmd) {
+    USB_DEBUG_PRINT(
+        std::string(
+            std::string("Executing command: ") +
+            e_cmd_to_string(cmd)
+        ).c_str()
+    );
+
+    switch(cmd) {
+        case E_CMD::PING: {
+            watchdogg_reset();
+            break;
+        }
+        case E_CMD::DISARM: {
+            CloseAllValves();
+            break;
+        }
+        case E_CMD::ARM: {
+            // Arming merely changes states :(
+            break;
+        }
+        case E_CMD::LOAD: {
+            StartLoading();
+            break;
+        }
+        case E_CMD::STOP_LOADING: {
+            StopLoading();
+            break;
+        }
+        case E_CMD::FIRE: {
+            Fire();
+            break;
+        }
+        case E_CMD::FLOW: {
+            Flow();
+            break;
+        }
+        case E_CMD::CO2_PURGE: {
+            StartCO2Purge();
+            break;
+        }
+        case E_CMD::NONE: {
+            break;
+        }
+        default: {
+            USB_DEBUG_PRINTLN("Cannot execute unknown command");
+            break;
+        }
+    }
+}
+
 void System::set_state(E_State new_state) {
     USB_DEBUG_PRINTLN(
         std::string(
@@ -195,4 +246,47 @@ void System::run_co2_purge(E_CMD cmd) {
             break;
         }
     }
+}
+
+void System::TransmitTelemetry() {
+    static uint8_t data_buffer[MAX_TLM_LENGTH] = { 0 };
+
+    memset(data_buffer, 0, MAX_TLM_LENGTH);
+    std::stringstream tlm_string;
+    tlm_string
+        << millis() << ","
+        << e_state_to_string(GetState()) << ","
+        << SABV::e_sabv_state_to_string(m_valve_gse_nitrous.GetCommandedState()) << ","
+        << SABV::e_sabv_state_to_string(m_valve_gse_co2.GetCommandedState()) << ","
+        << SABV::e_sabv_state_to_string(m_valve_rocket_nitrous.GetCommandedState()) << ","
+        << SABV::e_sabv_state_to_string(m_valve_rocket_fuel.GetCommandedState()) << ","
+        << Igniter::e_igniterstate_to_string(m_igniter.GetCurrentState()) << ","
+        << Igniter::e_igniterstate_to_string(m_igniter.GetCommandedState());
+    
+    const char* as_chr = tlm_string.str().c_str();
+    USB_DEBUG_PRINTLN(as_chr);
+    size_t len = strlen(as_chr);
+    uint8_t* data = (uint8_t*)as_chr;
+    uint8_t checksum = 0;
+    for (size_t i = 0; i < len; i++) {
+        checksum ^= data[i];
+    }
+
+    int n_to_copy;
+    if (len > MAX_TLM_LENGTH - 1) {
+        USB_DEBUG_PRINT("TLM string too long; length = ");
+        USB_DEBUG_PRINT(std::to_string(len).c_str());
+        USB_DEBUG_PRINTLN(" bytes; max = ");
+        USB_DEBUG_PRINT(std::to_string(MAX_TLM_LENGTH).c_str());
+        USB_DEBUG_PRINTLN(" bytes");
+        n_to_copy = MAX_TLM_LENGTH - 1;
+    }
+    else {
+        n_to_copy = len;
+    }
+
+    memcpy(data_buffer, data, n_to_copy);
+    data_buffer[n_to_copy] = checksum;
+
+    m_radio.TX(data_buffer, n_to_copy + 1);
 }

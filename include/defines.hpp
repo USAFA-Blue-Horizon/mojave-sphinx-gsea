@@ -8,13 +8,13 @@
 
 // Macro for logging only when when debugging
 #ifdef DEBUGGING_ENABLED
-#define USB_DEBUG_PRINTLN(message) Serial.println(message);
+#define USB_DEBUG_PRINTLN(message) Serial.println(message)
 #else
 #define USB_DEBUG_PRINTLN(messge)
 #endif
 
 #ifdef DEBUGGING_ENABLED
-#define USB_DEBUG_PRINT(message) Serial.print(message);
+#define USB_DEBUG_PRINT(message) Serial.print(message)
 #else
 #define USB_DEBUG_PRINT(messge)
 #endif
@@ -67,5 +67,9 @@ constexpr int SERVO_ANGLE_CLOSED_GSE_NITROUS    = 10;
 constexpr int P_SERVO_GSE_CO2                   = 99;
 constexpr int SERVO_ANGLE_OPEN_GSE_CO2          = 45;
 constexpr int SERVO_ANGLE_CLOSED_GSE_CO2        = 10;
+
+// Telemetry
+constexpr int MAX_TLM_LENGTH = 128;
+constexpr int TLM_TIMER_WAIT = 100; // ms
 
 #endif
