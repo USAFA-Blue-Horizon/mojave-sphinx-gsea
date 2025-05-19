@@ -10,6 +10,7 @@ uint32_t tlm_timer;
 
 void setup() {
   usb_setup();
+  System::GetInstance().Initialize();
   tlm_timer = millis();
   USB_DEBUG_PRINTLN("Setup complete");
 }

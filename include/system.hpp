@@ -109,7 +109,7 @@ class System {
             SERVO_ANGLE_OPEN_ROCKET_FUEL,
             SERVO_ANGLE_CLOSED_ROCKET_FUEL
         ),
-        m_igniter(P_IGNITER),
+        m_igniter(P_IGNITER_CONTROL),
         m_radio(&XBeeSerial, XBEE_SERIAL_SPEED),
         m_state(E_State::DISARMED) {};
 

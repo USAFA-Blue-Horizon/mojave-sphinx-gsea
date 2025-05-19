@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "defines.hpp"
+#include <string>
 
 class Radio {
     public:
@@ -13,6 +14,7 @@ class Radio {
 
         void Setup() {
             m_serial->begin(m_baudrate);
+            m_serial->setTimeout(XBEE_SERIAL_TIMOUT);
             // TODO: this is super dangerous!
             while (!m_serial);
         }

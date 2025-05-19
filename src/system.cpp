@@ -13,7 +13,7 @@ const char* System::e_state_to_string(E_State state) {
 }
 
 void System::execute_cmd(E_CMD cmd) {
-    USB_DEBUG_PRINT(
+    USB_DEBUG_PRINTLN(
         std::string(
             std::string("Executing command: ") +
             e_cmd_to_string(cmd)
@@ -72,6 +72,7 @@ void System::set_state(E_State new_state) {
             e_state_to_string(new_state)
         ).c_str()
     );
+    m_state = new_state;
 }
 
 void System::Initialize() {
@@ -120,7 +121,7 @@ void System::debug_unauth_cmd(E_CMD cmd) {
         std::string(
             std::string("Cannot run command") +
             e_cmd_to_string(cmd) +
-            "because the current state is " +
+            " because the current state is " +
             System::e_state_to_string(GetState())
         ).c_str()
     );
