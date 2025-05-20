@@ -15,6 +15,19 @@ typedef enum {
     FIRE,
     FLOW,
     CO2_PURGE,
+    TARE_LOADCELL,
+
+    #ifdef MANUAL_COMMAND_OVERRIDE_MODE_DANGEROUS
+    GSE_NOX_OPEN,
+    GSE_NOX_CLOSE,
+    GSE_CO2_OPEN,
+    GSE_CO2_CLOSE,
+    ROCKET_NOX_OPEN,
+    ROCKET_NOX_CLOSE,
+    ROCKET_FUEL_OPEN,
+    ROCKET_FUEL_CLOSE,
+    #endif
+
     NONE
 } E_CMD;
 

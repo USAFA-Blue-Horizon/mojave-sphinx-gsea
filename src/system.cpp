@@ -2,12 +2,18 @@
 
 const char* System::e_state_to_string(E_State state) {
     switch(state) {
-        case E_State::DISARMED:     return "DISARMED";
-        case E_State::ARMED:        return "ARMED";
-        case E_State::LOADING:      return "LOADING";
-        case E_State::LOADED:       return "LOADED";
-        case E_State::FLOW:         return "FLOW";
-        case E_State::CO2_PURGE:    return "CO2_PURGE";
+        case E_State::DISARMED:         return "DISARMED";
+        case E_State::ARMED:            return "ARMED";
+        case E_State::LOADING:          return "LOADING";
+        case E_State::LOADED:           return "LOADED";
+        case E_State::FLOW:             return "FLOW";
+        case E_State::FIRE:             return "FIRE";
+        case E_State::CO2_PURGE:        return "CO2_PURGE";
+        
+        #ifdef MANUAL_COMMAND_OVERRIDE_MODE_DANGEROUS
+        case E_State::MANUAL_OVERRIDE:  return "MANUAL_OVERRIDE";
+        #endif
+
         default:                    return "UNKNOWN_STATE";
     }
 }
@@ -53,6 +59,45 @@ void System::execute_cmd(E_CMD cmd) {
             StartCO2Purge();
             break;
         }
+        case E_CMD::TARE_LOADCELL: {
+            m_loadcell.Tare();
+        }
+
+        #ifdef MANUAL_COMMAND_OVERRIDE_MODE_DANGEROUS
+        case E_CMD::GSE_NOX_OPEN: {
+            m_valve_gse_nitrous.Open();
+            break;
+        }
+        case E_CMD::GSE_NOX_CLOSE: {
+            m_valve_gse_nitrous.Close();
+            break;
+        }
+        case E_CMD::GSE_CO2_OPEN: {
+            m_valve_gse_co2.Open();
+            break;
+        }
+        case E_CMD::GSE_CO2_CLOSE: {
+            m_valve_gse_co2.Close();
+            break;
+        }
+        case E_CMD::ROCKET_NOX_OPEN: {
+            m_valve_rocket_nitrous.Open();
+            break;
+        }
+        case E_CMD::ROCKET_NOX_CLOSE: {
+            m_valve_rocket_nitrous.Close();
+            break;
+        }
+        case E_CMD::ROCKET_FUEL_OPEN: {
+            m_valve_rocket_fuel.Open();
+            break;
+        }
+        case E_CMD::ROCKET_FUEL_CLOSE: {
+            m_valve_rocket_fuel.Close();
+            break;
+        }
+        #endif
+
         case E_CMD::NONE: {
             break;
         }
@@ -81,10 +126,19 @@ void System::Initialize() {
     m_valve_rocket_nitrous.Setup();
     m_valve_rocket_fuel.Setup();
     m_igniter.Setup();
+    m_loadcell.Setup();
+    m_pt.Setup();
     m_radio.Setup();
 }
 
 void System::RunStateManager(E_CMD cmd) {
+    #ifdef MANUAL_COMMAND_OVERRIDE_MODE_DANGEROUS
+    if (cmd != E_CMD::NONE) {
+        execute_cmd(cmd);
+    }
+    return;
+    #endif
+
     switch (System::GetInstance().GetState()) {
         case System::E_State::DISARMED: {
             run_disarmed(cmd);
@@ -100,6 +154,10 @@ void System::RunStateManager(E_CMD cmd) {
         }
         case System::E_State::LOADED: {
             run_loaded(cmd);
+            break;
+        }
+        case System::E_State::FIRE: {
+            run_fire(cmd);
             break;
         }
         case System::E_State::FLOW: {
@@ -132,6 +190,10 @@ void System::run_disarmed(E_CMD cmd) {
         case E_CMD::ARM: {
             execute_cmd(cmd);
             set_state(E_State::ARMED);
+            break;
+        }
+        case E_CMD::TARE_LOADCELL: {
+            execute_cmd(cmd);
             break;
         }
         case E_CMD::NONE: {
@@ -192,7 +254,7 @@ void System::run_loaded(E_CMD cmd) {
     switch(cmd) {
         case E_CMD::FIRE: {
             execute_cmd(cmd);
-            set_state(E_State::FLOW);
+            set_state(E_State::FIRE);
             break;
         }
         case E_CMD::FLOW: {
@@ -206,6 +268,27 @@ void System::run_loaded(E_CMD cmd) {
         default: {
             debug_unauth_cmd(cmd);
             break;
+        }
+    }
+}
+
+void System::run_fire(E_CMD cmd) {
+    if (m_igniter_littime == -1) {
+        m_igniter_littime = millis();
+    }
+
+    if (millis() - m_igniter_littime >= IGNITER_RUNTIME) {
+        m_igniter.Standby();
+        m_igniter_littime = -1;
+        set_state(E_State::FLOW);
+    }
+
+    switch (cmd) {
+        case E_CMD::NONE: {
+            break;
+        }
+        default: {
+            debug_unauth_cmd(cmd);
         }
     }
 }
@@ -261,8 +344,11 @@ void System::TransmitTelemetry() {
         << SABV::e_sabv_state_to_string(m_valve_gse_co2.GetCommandedState()) << ","
         << SABV::e_sabv_state_to_string(m_valve_rocket_nitrous.GetCommandedState()) << ","
         << SABV::e_sabv_state_to_string(m_valve_rocket_fuel.GetCommandedState()) << ","
-        << Igniter::e_igniterstate_to_string(m_igniter.GetCurrentState()) << ","
-        << Igniter::e_igniterstate_to_string(m_igniter.GetCommandedState());
+        << Igniter::e_igniterstate_to_string(m_igniter.GetCurrentOutputState()) << ","
+        << Igniter::e_igniterstate_to_string(m_igniter.GetCommandedState()) << ","
+        << m_igniter.GetContinuity() << ","
+        << m_loadcell.GetLoad() << ","
+        << m_pt.Measure();
     
     const char* as_chr = tlm_string.str().c_str();
     USB_DEBUG_PRINTLN(as_chr);

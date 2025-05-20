@@ -6,6 +6,8 @@
 #include "igniter.hpp"
 #include "radio.hpp"
 #include "commands.hpp"
+#include "loadcell.hpp"
+#include "pressure_transducer.hpp"
 #include <string>
 #include <sstream>
 
@@ -16,8 +18,14 @@ class System {
             ARMED,
             LOADING,
             LOADED,
+            FIRE,
             FLOW,
             CO2_PURGE
+
+            #ifdef MANUAL_COMMAND_OVERRIDE_MODE_DANGEROUS
+            ,MANUAL_OVERRIDE
+            #endif
+            
         } E_State;
 
         static const char* e_state_to_string(E_State);
@@ -69,8 +77,8 @@ class System {
             m_valve_rocket_fuel.Open();
         }
 
-        void Ignite() {
-            m_igniter.Ignite();
+        void StopIgniting() {
+            m_igniter.Standby();
         }
 
         void Flow() {
@@ -109,9 +117,13 @@ class System {
             SERVO_ANGLE_OPEN_ROCKET_FUEL,
             SERVO_ANGLE_CLOSED_ROCKET_FUEL
         ),
-        m_igniter(P_IGNITER_CONTROL),
+        m_igniter(P_IGNITER_CONTROL, P_IGNITER_CONTINUITY),
         m_radio(&XBeeSerial, XBEE_SERIAL_SPEED),
-        m_state(E_State::DISARMED) {};
+        m_loadcell(P_LOADCELL_DT, P_LOADCELL_SCK, LOADCELL_SCALING),
+        m_pt(P_PRESSURE_TRANSDUCER),
+        m_state(E_State::DISARMED),
+        m_igniter_littime(-1)
+        {};
 
         SABV m_valve_gse_nitrous;
         SABV m_valve_gse_co2;
@@ -119,6 +131,8 @@ class System {
         SABV m_valve_rocket_fuel;
         Igniter m_igniter;
         Radio m_radio;
+        Loadcell m_loadcell;
+        PressureTransducer m_pt;
         E_State m_state;
 
         void set_state(E_State new_state);
@@ -127,10 +141,13 @@ class System {
         void run_armed(E_CMD cmd);
         void run_loading(E_CMD cmd);
         void run_loaded(E_CMD cmd);
+        void run_fire(E_CMD cmd);
         void run_flow(E_CMD cmd);
         void run_co2_purge(E_CMD cmd);
 
         void debug_unauth_cmd(E_CMD cmd);
+
+        long m_igniter_littime;
 };
 
 #endif

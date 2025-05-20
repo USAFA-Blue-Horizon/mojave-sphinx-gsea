@@ -6,8 +6,7 @@
 inline void usb_setup() {
     #ifdef DEBUGGING_ENABLED
     Serial.begin(USB_SERIAL_SPEED);
-    // TODO: BAD
-    while (!Serial);
+    delay(1000);
     #endif
 
     USB_DEBUG_PRINTLN("I'm all Sphinxed up!");

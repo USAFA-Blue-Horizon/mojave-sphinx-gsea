@@ -29,6 +29,37 @@ E_CMD parse_command(uint8_t* alleged_cmd) {
     else if (strcmp(alleged_cmd_string, CMD_CO2_PURGE) == 0) {
         return E_CMD::CO2_PURGE;
     }
+    else if (strcmp(alleged_cmd_string, CMD_TARE_LOADCELL) == 0) {
+        return E_CMD::TARE_LOADCELL;
+    }
+
+    #ifdef MANUAL_COMMAND_OVERRIDE_MODE_DANGEROUS
+    else if (strcmp(alleged_cmd_string, CMD_GSE_NOX_OPEN) == 0) {
+        return E_CMD::GSE_NOX_OPEN;
+    }
+    else if (strcmp(alleged_cmd_string, CMD_GSE_NOX_CLOSE) == 0) {
+        return E_CMD::GSE_NOX_CLOSE;
+    }
+    else if (strcmp(alleged_cmd_string, CMD_GSE_CO2_OPEN) == 0) {
+        return E_CMD::GSE_CO2_OPEN;
+    }
+    else if (strcmp(alleged_cmd_string, CMD_GSE_CO2_CLOSE) == 0) {
+        return E_CMD::GSE_CO2_CLOSE;
+    }
+    else if (strcmp(alleged_cmd_string, CMD_ROCKET_NOX_OPEN) == 0) {
+        return E_CMD::ROCKET_NOX_OPEN;
+    }
+    else if (strcmp(alleged_cmd_string, CMD_ROCKET_NOX_CLOSE) == 0) {
+        return E_CMD::ROCKET_NOX_CLOSE;
+    }
+    else if (strcmp(alleged_cmd_string, CMD_ROCKET_FUEL_OPEN) == 0) {
+        return E_CMD::ROCKET_FUEL_OPEN;
+    }
+    else if (strcmp(alleged_cmd_string, CMD_ROCKET_FUEL_CLOSE) == 0) {
+        return E_CMD::ROCKET_FUEL_CLOSE;
+    }
+    #endif
+
     else {
         return E_CMD::NONE;
     }
@@ -44,7 +75,20 @@ const char* e_cmd_to_string(E_CMD cmd) {
         case E_CMD::FIRE:           return "FIRE";
         case E_CMD::FLOW:           return "FLOW";
         case E_CMD::CO2_PURGE:      return "CO2_PURGE";
+        case E_CMD::TARE_LOADCELL:  return "TARE_LOADCELL";
         case E_CMD::NONE:           return "NONE";
+
+        #ifdef MANUAL_COMMAND_OVERRIDE_MODE_DANGEROUS
+        case E_CMD::GSE_NOX_OPEN:       return "GSE_NOX_OPEN";
+        case E_CMD::GSE_NOX_CLOSE:      return "GSE_NOX_CLOSE";
+        case E_CMD::GSE_CO2_OPEN:       return "GSE_CO2_OPEN";
+        case E_CMD::GSE_CO2_CLOSE:      return "GSE_CO2_CLOSE";
+        case E_CMD::ROCKET_NOX_OPEN:    return "ROCKET_NOX_OPEN";
+        case E_CMD::ROCKET_NOX_CLOSE:   return "ROCKET_NOX_CLOSE";
+        case E_CMD::ROCKET_FUEL_OPEN:  return "ROCKET_FUEL_OPEN";
+        case E_CMD::ROCKET_FUEL_CLOSE:  return "ROCKET_FUEL_CLOSE";
+        #endif
+
         default:                    return "UNKNOWN_CMD";
     }
 }

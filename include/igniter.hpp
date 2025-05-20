@@ -16,12 +16,15 @@ class Igniter {
             else return "IGNITE";
         }
 
-        inline Igniter(int pin) {
-            m_pin = pin;
+        inline Igniter(int output_pin, int continuity_pin) {
+            m_p_output = output_pin;
+            m_p_continuity = continuity_pin;
         }
 
         inline void Setup() {
-            digitalWrite(m_pin, LOW);
+            pinMode(m_p_output, OUTPUT);
+            digitalWrite(m_p_output, LOW);
+            pinMode(m_p_continuity, INPUT);
         }
 
         inline void Ignite() {
@@ -36,13 +39,17 @@ class Igniter {
             return m_commanded_state;
         }
 
-        inline E_IgniterState GetCurrentState() {
-            return digitalRead(m_pin) ? E_IgniterState::IGNITE : E_IgniterState::STANDBY;
+        inline E_IgniterState GetCurrentOutputState() {
+            return digitalRead(m_p_output) ? E_IgniterState::IGNITE : E_IgniterState::STANDBY;
+        }
+
+        inline int GetContinuity() {
+            return analogRead(m_p_continuity);
         }
 
     private:
         inline void write(uint8_t high_or_low) {
-            digitalWrite(m_pin, high_or_low);
+            digitalWrite(m_p_output, high_or_low);
         }
 
         inline void set(E_IgniterState state) {
@@ -56,7 +63,8 @@ class Igniter {
         }
 
         E_IgniterState m_commanded_state;
-        int m_pin;
+        int m_p_output;
+        int m_p_continuity;
 };
 
 #endif

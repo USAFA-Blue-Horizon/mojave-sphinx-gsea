@@ -22,14 +22,17 @@
 // Settings
 constexpr int USB_SERIAL_SPEED = 115200;
 constexpr uint32_t WATCHDOGG_TIMEOUT = 300 * 1000;
+// #define MANUAL_COMMAND_OVERRIDE_MODE_DANGEROUS
 
 // Igniter
 constexpr int P_IGNITER_CONTROL         = 41;
 constexpr int P_IGNITER_CONTINUITY      = A4;
+constexpr int IGNITER_RUNTIME           = 4000;
 
 // Loadcell
-constexpr int P_LOADCELL_DT             = 39;
-constexpr int P_LOADCELL_SCK            = 38;
+constexpr int P_LOADCELL_DT             = 38;
+constexpr int P_LOADCELL_SCK            = 39;
+constexpr float LOADCELL_SCALING        = 6209.96;
 
 // Pressure Transducer
 constexpr int P_PRESSURE_TRANSDUCER     = A13;
@@ -47,6 +50,18 @@ constexpr const char* CMD_STOP_LOADING  = "STOP_LOADING--------------";
 constexpr const char* CMD_FIRE          = "FIRE----------------------";
 constexpr const char* CMD_FLOW          = "FLOW----------------------";
 constexpr const char* CMD_CO2_PURGE     = "CO2_PURGE-----------------";
+constexpr const char* CMD_TARE_LOADCELL = "TARE_LOADCELL-------------";
+
+#ifdef MANUAL_COMMAND_OVERRIDE_MODE_DANGEROUS
+constexpr const char* CMD_GSE_NOX_OPEN      = "GSE_NOX_OPEN!!!!!!!!!!!!!!";
+constexpr const char* CMD_GSE_NOX_CLOSE     = "GSE_NOX_CLOSE!!!!!!!!!!!!!";
+constexpr const char* CMD_GSE_CO2_OPEN      = "GSE_CO2_OPEN!!!!!!!!!!!!!!";
+constexpr const char* CMD_GSE_CO2_CLOSE     = "GSE_CO2_CLOSE!!!!!!!!!!!!!";
+constexpr const char* CMD_ROCKET_NOX_OPEN   = "ROCKET_NOX_OPEN!!!!!!!!!!!";
+constexpr const char* CMD_ROCKET_NOX_CLOSE  = "ROCKET_NOX_CLOSE!!!!!!!!!!";
+constexpr const char* CMD_ROCKET_FUEL_OPEN  = "ROCKET_FUEL_OPEN!!!!!!!!!!";
+constexpr const char* CMD_ROCKET_FUEL_CLOSE = "ROCKET_FUEL_CLOSE!!!!!!!!!";
+#endif
 
 // Servos
 // Rocket nitrous
