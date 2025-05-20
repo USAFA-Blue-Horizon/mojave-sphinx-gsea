@@ -40,7 +40,7 @@ class Igniter {
         }
 
         inline E_IgniterState GetCurrentOutputState() {
-            return digitalRead(m_p_output) ? E_IgniterState::IGNITE : E_IgniterState::STANDBY;
+            return E_IgniterState::STANDBY;
         }
 
         inline int GetContinuity() {

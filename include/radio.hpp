@@ -15,8 +15,6 @@ class Radio {
         void Setup() {
             m_serial->begin(m_baudrate);
             m_serial->setTimeout(XBEE_SERIAL_TIMOUT);
-            // TODO: this is super dangerous!
-            while (!m_serial);
         }
 
         void TX(uint8_t* data, int length) {
