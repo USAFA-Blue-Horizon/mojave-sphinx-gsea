@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<data>
+  <loop>false</loop>
+  <repeat_times>1</repeat_times>
+  <repeat_period>500</repeat_period>
+  <packets_list>
+    <packet name="packet_0">
+      <payload>50494E472D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</payload>
+    </packet>
+    <packet name="packet_1">
+      <payload>44495341524D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</payload>
+    </packet>
+    <packet name="packet_2">
+      <payload>41524D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</payload>
+    </packet>
+    <packet name="packet_3">
+      <payload>4C4F41442D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</payload>
+    </packet>
+    <packet name="packet_4">
+      <payload>53544F505F4C4F4144494E472D2D2D2D2D2D2D2D2D2D2D2D2D2D</payload>
+    </packet>
+    <packet name="packet_5">
+      <payload>464952452D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</payload>
+    </packet>
+    <packet name="packet_6">
+      <payload>464C4F572D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</payload>
+    </packet>
+    <packet name="packet_7">
+      <payload>434F325F50555247452D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D2D</payload>
+    </packet>
+    <packet name="packet_8">
+      <payload>544152455F4C4F414443454C4C2D2D2D2D2D2D2D2D2D2D2D2D2D</payload>
+    </packet>
+    <packet name="packet_9">
+      <payload>4753455F4E4F585F4F50454E2121212121212121212121212121</payload>
+    </packet>
+    <packet name="packet_10">
+      <payload>4753455F4E4F585F434C4F534521212121212121212121212121</payload>
+    </packet>
+    <packet name="packet_11">
+      <payload>4753455F434F325F4F50454E2121212121212121212121212121</payload>
+    </packet>
+    <packet name="packet_12">
+      <payload>4753455F434F325F434C4F534521212121212121212121212121</payload>
+    </packet>
+    <packet name="packet_13">
+      <payload>524F434B45545F4E4F585F4F50454E2121212121212121212121</payload>
+    </packet>
+    <packet name="packet_14">
+      <payload>524F434B45545F4E4F585F434C4F534521212121212121212121</payload>
+    </packet>
+    <packet name="packet_15">
+      <payload>524F434B45545F4655454C5F4F50454E21212121212121212121</payload>
+    </packet>
+    <packet name="packet_16">
+      <payload>524F434B45545F4655454C5F434C4F5345212121212121212121</payload>
+    </packet>
+  </packets_list>
+</data>
