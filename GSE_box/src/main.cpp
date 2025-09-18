@@ -12,6 +12,7 @@ uint32_t tlm_timer;
 void setup() {
   usb_setup();
   System::GetInstance().Initialize();
+  watchdogg_reset();
   tlm_timer = millis();
   USB_DEBUG_PRINTLN("Setup complete");
 }

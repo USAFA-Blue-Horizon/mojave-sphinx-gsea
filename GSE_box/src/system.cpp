@@ -61,6 +61,7 @@ void System::execute_cmd(E_CMD cmd) {
         }
         case E_CMD::TARE_LOADCELL: {
             m_loadcell.Tare();
+            break;
         }
 
         #ifdef MANUAL_COMMAND_OVERRIDE_MODE_DANGEROUS
@@ -335,29 +336,48 @@ void System::run_co2_purge(E_CMD cmd) {
 void System::TransmitTelemetry() {
     static uint8_t data_buffer[MAX_TLM_LENGTH] = { 0 };
 
-    memset(data_buffer, 0, MAX_TLM_LENGTH);
-    std::stringstream tlm_string;
-    tlm_string
-        << millis() << ","
-        << e_state_to_string(GetState()) << ","
-        << SABV::e_sabv_state_to_string(m_valve_gse_nitrous.GetCommandedState()) << ","
-        << SABV::e_sabv_state_to_string(m_valve_gse_co2.GetCommandedState()) << ","
-        << SABV::e_sabv_state_to_string(m_valve_rocket_nitrous.GetCommandedState()) << ","
-        << SABV::e_sabv_state_to_string(m_valve_rocket_fuel.GetCommandedState()) << ","
-        << Igniter::e_igniterstate_to_string(m_igniter.GetCurrentOutputState()) << ","
-        << Igniter::e_igniterstate_to_string(m_igniter.GetCommandedState()) << ","
-        << m_igniter.GetContinuity() << ","
-        << m_loadcell.GetLoad() << ","
-        << m_pt.Measure();
+    // memset(data_buffer, 0, MAX_TLM_LENGTH);
+    // std::stringstream tlm_string;
+    // tlm_string
+    //     << millis() << ","
+    //     << e_state_to_string(GetState()) << ","
+    //     << SABV::e_sabv_state_to_string(m_valve_gse_nitrous.GetCommandedState()) << ","
+    //     << SABV::e_sabv_state_to_string(m_valve_gse_co2.GetCommandedState()) << ","
+    //     << SABV::e_sabv_state_to_string(m_valve_rocket_nitrous.GetCommandedState()) << ","
+    //     << SABV::e_sabv_state_to_string(m_valve_rocket_fuel.GetCommandedState()) << ","
+    //     << Igniter::e_igniterstate_to_string(m_igniter.GetCurrentOutputState()) << ","
+    //     << Igniter::e_igniterstate_to_string(m_igniter.GetCommandedState()) << ","
+    //     << m_igniter.GetContinuity() << ","
+    //     << m_loadcell.GetLoad() << ","
+    //     << m_pt.Measure();
     
-    const char* as_chr = tlm_string.str().c_str();
-    USB_DEBUG_PRINTLN(as_chr);
-    size_t len = strlen(as_chr);
-    uint8_t* data = (uint8_t*)as_chr;
-    uint8_t checksum = 0;
-    for (size_t i = 0; i < len; i++) {
-        checksum ^= data[i];
-    }
+    // const char* as_chr = tlm_string.str().c_str();
+
+std::stringstream tlm_string;
+tlm_string
+    << millis() << ","
+    << e_state_to_string(GetState()) << ","
+    << SABV::e_sabv_state_to_string(m_valve_gse_nitrous.GetCommandedState()) << ","
+    << SABV::e_sabv_state_to_string(m_valve_gse_co2.GetCommandedState()) << ","
+    << SABV::e_sabv_state_to_string(m_valve_rocket_nitrous.GetCommandedState()) << ","
+    << SABV::e_sabv_state_to_string(m_valve_rocket_fuel.GetCommandedState()) << ","
+    << Igniter::e_igniterstate_to_string(m_igniter.GetCurrentOutputState()) << ","
+    << Igniter::e_igniterstate_to_string(m_igniter.GetCommandedState()) << ","
+    << m_igniter.GetContinuity() << ","
+    << m_loadcell.GetLoad() << ","
+    << m_pt.Measure();
+
+std::string tlm_std = tlm_string.str();   // keep the std::string alive
+const char* as_chr = tlm_std.c_str();
+size_t len = tlm_std.size();
+uint8_t* data = (uint8_t*)as_chr;
+
+USB_DEBUG_PRINTLN(as_chr);
+
+uint8_t checksum = 0;
+for (size_t i = 0; i < len; i++) {
+    checksum ^= data[i];
+}
 
     int n_to_copy;
     if (len > MAX_TLM_LENGTH - 1) {

@@ -38,9 +38,9 @@ constexpr float LOADCELL_SCALING        = 6209.96;
 constexpr int P_PRESSURE_TRANSDUCER     = A13;
 
 // XBee
-#define XBeeSerial Serial8
-constexpr int XBEE_SERIAL_SPEED = 115200;
-constexpr int XBEE_SERIAL_TIMOUT = 50;
+// #define XBeeSerial Serial8
+// constexpr int XBEE_SERIAL_SPEED = 115200;
+// constexpr int XBEE_SERIAL_TIMOUT = 50;
 #define RX_MESSAGE_LENGTH 26
 constexpr const char* CMD_PING          = "PING----------------------";
 constexpr const char* CMD_DISARM        = "DISARM--------------------";

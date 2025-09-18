@@ -1,4 +1,5 @@
 #include <SABV.hpp>
+#include <cmath>
 
 SABV::SABV(int pin, int open_angle, int closed_angle) : m_commanded_state(E_SABV_State::CLOSED) {
     m_pin = pin;

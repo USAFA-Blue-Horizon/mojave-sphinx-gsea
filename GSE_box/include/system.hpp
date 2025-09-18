@@ -1,6 +1,7 @@
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
 
+
 #include "defines.hpp"
 #include "SABV.hpp"
 #include "igniter.hpp"
@@ -118,7 +119,7 @@ class System {
             SERVO_ANGLE_CLOSED_ROCKET_FUEL
         ),
         m_igniter(P_IGNITER_CONTROL, P_IGNITER_CONTINUITY),
-        m_radio(&XBeeSerial, XBEE_SERIAL_SPEED),
+        m_radio(), // use the new Radio() default ctor (LoRa)
         m_loadcell(P_LOADCELL_DT, P_LOADCELL_SCK, LOADCELL_SCALING),
         m_pt(P_PRESSURE_TRANSDUCER),
         m_state(E_State::DISARMED),

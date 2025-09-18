@@ -1,9 +1,14 @@
 #include "commands.hpp"
 
 E_CMD parse_command(uint8_t* alleged_cmd) {
+    // Copy into local buffer and null-terminate
+    static char local_cmd[RX_MESSAGE_LENGTH + 1];
+    memcpy(local_cmd, alleged_cmd, RX_MESSAGE_LENGTH);
+    local_cmd[RX_MESSAGE_LENGTH] = '\0';
+    // ... rest unchanged ...
     // Make sure that last byte is a zero before doing string comparison
-    alleged_cmd[RX_MESSAGE_LENGTH] = 0;
-    const char* alleged_cmd_string = (const char*)alleged_cmd;
+
+
     
     if (strcmp(alleged_cmd_string, CMD_PING) == 0) {
         return E_CMD::PING;
